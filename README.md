@@ -127,6 +127,8 @@ Distributed under the **MIT** License. See [`LICENSE`](LICENSE) for more informa
 
 ---
 
+[![SLSA Generic Generator](https://github.com/CryXcvv/Base-Kun/actions/workflows/slsa.yml/badge.svg)](https://github.com/CryXcvv/Base-Kun/actions/workflows/slsa.yml)
+
 <p align="center">
   <sub>Built with ❤️ and ☕ by Abrar Alhafizi</sub>
   <br>
