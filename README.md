@@ -5,19 +5,19 @@
 <h1 align="center">Basekun — Free Online Tools</h1>
 
 <p align="center">
-  <em>Koleksi tools online gratis untuk kebutuhan sehari-hari. Cepat, aman, dan 100% client-side.</em>
+  <em>A collection of free online tools for everyday needs. Fast, secure, and 100% client-side.</em>
 </p>
 
 <p align="center">
   <a href="https://basekun.netlify.app/">🌐 Live Demo</a>
   ·
-  <a href="#-fitur">Fitur</a>
+  <a href="#-features">Features</a>
   ·
-  <a href="#-tangkapan-layar">Screenshot</a>
+  <a href="#-screenshot">Screenshot</a>
   ·
-  <a href="#-struktur-direktori">Struktur</a>
+  <a href="#-directory-structure">Structure</a>
   ·
-  <a href="#-lisensi">Lisensi</a>
+  <a href="#-license">License</a>
 </p>
 
 <p align="center">
@@ -29,114 +29,97 @@
 
 ---
 
-## 📸 Tangkapan Layar
+## 📸 Screenshot
 
 ![Basekun Screenshot](basekun.jpeg)
 
 ---
 
-## ✨ Fitur
+## ✨ Features
 
 <table>
   <thead>
     <tr>
       <th>Tool</th>
-      <th>Fitur</th>
-      <th>Keunggulan</th>
+      <th>Description</th>
+      <th>Highlights</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td><b>🎬 TikTok Downloader</b></td>
-      <td>Download video TikTok tanpa watermark</td>
-      <td>Mendukung berbagai kualitas, paste link langsung download</td>
+      <td>Download TikTok videos without watermark</td>
+      <td>Multiple quality options, paste link & download instantly</td>
     </tr>
     <tr>
       <td><b>📄 Image to PDF</b></td>
-      <td>Konversi gambar ke file PDF</td>
-      <td>Batch upload, atur urutan halaman, kompres PDF</td>
+      <td>Convert images to PDF files</td>
+      <td>Batch upload, reorder pages, compress PDF output</td>
     </tr>
     <tr>
       <td><b>📱 QR Generator</b></td>
-      <td>Buat QR Code dari teks atau URL</td>
-      <td>Kustom ukuran & warna, download PNG/SVG</td>
+      <td>Generate QR codes from text or URLs</td>
+      <td>Custom size & colors, download as PNG/SVG</td>
     </tr>
     <tr>
       <td><b>🗜️ Image Compressor</b></td>
-      <td>Kompres ukuran gambar</td>
-      <td>Drag & drop, preview before/after, tanpa upload</td>
+      <td>Compress image file sizes</td>
+      <td>Drag & drop, before/after preview, no upload needed</td>
     </tr>
   </tbody>
 </table>
 
-> ✅ **100% Client-Side** — Semua proses terjadi di browser Anda. Tidak ada data yang dikirim atau disimpan di server manapun.
+> ✅ **100% Client-Side** — All processing happens in your browser. No data is ever sent or stored on any server.
 
-## 🛠️ Teknologi
+## 🛠️ Tech Stack
 
-| Teknologi | Penggunaan |
-|-----------|------------|
-| ![HTML5](https://img.shields.io/badge/-HTML5-E34F26?logo=html5&logoColor=fff) | Struktur dan semantic markup |
-| ![CSS3](https://img.shields.io/badge/-CSS3-1572B6?logo=css3&logoColor=fff) | Styling modern (CSS variables, flexbox, animasi) |
-| ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?logo=javascript&logoColor=000) | Logika aplikasi vanilla, tanpa framework |
-| [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans) | Tipografi utama |
-| [Material Symbols](https://fonts.google.com/icons) | Ikon antarmuka |
+| Technology | Usage |
+|-----------|-------|
+| ![HTML5](https://img.shields.io/badge/-HTML5-E34F26?logo=html5&logoColor=fff) | Semantic structure & markup |
+| ![CSS3](https://img.shields.io/badge/-CSS3-1572B6?logo=css3&logoColor=fff) | Modern styling (CSS variables, flexbox, animations) |
+| ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?logo=javascript&logoColor=000) | Vanilla app logic, no frameworks |
 
-## 🚀 Cara Memulai
+ visit the live version: [**basekun.netlify.app**](https://basekun.netlify.app/)
 
-```bash
-# Clone repositori
-git clone https://github.com/CryXcvv/base-kun.git
-
-# Masuk ke direktori
-cd base-kun
-
-# Buka di browser
-start index.html          # Windows
-open index.html           # macOS
-xdg-open index.html       # Linux
-```
-
-Atau langsung akses versi live: [**basekun.netlify.app**](https://basekun.netlify.app/)
-
-## 🗂️ Struktur Direktori
+## 🗂️ Directory Structure
 
 ```
 base-kun/
-├── 📄 index.html                 # Beranda — daftar semua tool
+├── 📄 index.html                 # Homepage — tool listing
 ├── 🎨 style.css                  # Global stylesheet (dark theme)
 ├── 🎬 tiktok-downloader.html     # TikTok video downloader
-├── 📄 image-to-pdf.html          # Konverter gambar → PDF
-├── 📱 qr-generator.html          # Pembuat QR Code
-├── 🗜️ image-compressor.html      # Kompresor gambar
-├── 🖼️ logo.png                   # Logo utama (PNG)
-├── 🖼️ logo.jpg                   # Logo alternatif (JPG)
-└── 📖 README.md                  # Dokumentasi ini
+├── 📄 image-to-pdf.html          # Image → PDF converter
+├── 📱 qr-generator.html          # QR code generator
+├── 🗜️ image-compressor.html      # Image compressor
+├── 🖼️ logo.png                   # Primary logo (PNG)
+├── 🖼️ logo.jpg                   # Alternative logo (JPG)
+└── 📖 README.md                  # This documentation
 ```
 
 ## 🎯 Roadmap
 
-- [ ] Tambahkan dark/light theme toggle
+- [ ] Dark/light theme toggle
 - [ ] PDF to Image converter
-- [ ] Unit converter (panjang, berat, suhu)
+- [ ] Unit converter (length, weight, temperature)
 - [ ] Password generator
 - [ ] Text to speech
 - [ ] PWA support (installable)
 
-## 🤝 Kontribusi
+## 🤝 Contributing
 
-Kontribusi selalu diterima! Langkah-langkah:
+Contributions are welcome! Here's how:
 
-1. Fork repositori ini
-2. Buat branch baru (`git checkout -b fitur-keren`)
-3. Commit perubahan (`git commit -m 'Tambah fitur keren'`)
-4. Push ke branch (`git push origin fitur-keren`)
-5. Buat Pull Request
+1. Fork this repository
+2. Create a new branch (`git checkout -b cool-feature`)
+3. Commit your changes (`git commit -m 'Add cool feature'`)
+4. Push to the branch (`git push origin cool-feature`)
+5. Open a Pull Request
 
-## 📄 Lisensi
+## 📄 License
 
-Didistribusikan di bawah lisensi **MIT**. Lihat [`LICENSE`](LICENSE) untuk informasi lebih lanjut.
+Distributed under the **MIT** License. See [`LICENSE`](LICENSE) for more information.
 
-## 👤 Pembuat
+## 👤 Author
 
 **Abrar Alhafizi**
 - 🌐 Website: [abrur.netlify.app](https://abrur.netlify.app/)
@@ -145,7 +128,7 @@ Didistribusikan di bawah lisensi **MIT**. Lihat [`LICENSE`](LICENSE) untuk infor
 ---
 
 <p align="center">
-  <sub>Dibuat dengan ❤️ dan ☕ oleh Abrar Alhafizi</sub>
+  <sub>Built with ❤️ and ☕ by Abrar Alhafizi</sub>
   <br>
-  <sub>⭐ Jangan lupa kasih star jika proyek ini bermanfaat!</sub>
+  <sub>⭐ Star this project if you find it useful!</sub>
 </p>
