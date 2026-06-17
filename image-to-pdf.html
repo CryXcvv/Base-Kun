@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Konversi gambar JPG, PNG ke PDF secara gratis - Basekun Tools">
+    <title>Image to PDF — Basekun</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <div class="nav-logo"><img src="logo.png" alt="Logo"></div>
+            <span class="nav-brand-text">Basekun</span>
+        </div>
+        <a href="index.html" class="nav-back">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Kembali
+        </a>
+    </nav>
+
+    <div class="page-container">
+        <div class="shape shape-circle" style="width:280px;height:280px;top:-40px;left:-60px;"><div class="shape-inner" style="animation:floatA 10s ease-in-out infinite;"></div></div>
+        <div class="shape shape-ring" style="width:160px;height:160px;bottom:60px;right:-40px;"><div class="shape-inner" style="animation:floatB 8s ease-in-out infinite;"></div></div>
+        <div class="shape shape-dot" style="width:50px;height:50px;top:35%;right:8%;"><div class="shape-inner" style="animation:floatA 6s ease-in-out infinite 2s;"></div></div>
+
+        <div class="page-inner">
+            <div class="hero">
+                <div class="hero-badge">
+                    <span class="pulse-dot"></span>
+                    <span class="hero-badge-text">Client-Side Processing</span>
+                </div>
+                <h1 class="hero-title">Image to PDF</h1>
+                <p class="hero-subtitle">Konversi gambar JPG, JPEG, PNG ke file PDF. Semua proses dilakukan di browser, data aman.</p>
+            </div>
+
+            <div class="card">
+                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <span class="material-symbols-outlined">add_photo_alternate</span>
+                    <span class="drop-zone-text">Klik atau drag gambar ke sini</span>
+                    <span class="drop-zone-hint">JPG, JPEG, PNG — Bisa pilih banyak file</span>
+                </div>
+                <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg" multiple hidden>
+
+                <div class="file-list" id="fileList"></div>
+
+                <div class="input-group" style="margin-top:16px;">
+                    <div class="input-row">
+                        <select class="text-input" id="pageSize">
+                            <option value="a4">A4</option>
+                            <option value="letter">Letter</option>
+                            <option value="fit">Fit to Image</option>
+                        </select>
+                        <select class="text-input" id="orientation">
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" id="convertBtn" onclick="convertToPdf()" disabled>
+                        <span class="material-symbols-outlined">picture_as_pdf</span>
+                        Convert to PDF
+                    </button>
+                </div>
+
+                <div class="status-msg" id="pdfStatus"></div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Made with care by <a href="https://abrur.netlify.app/" target="_blank" rel="noopener noreferrer">Abrar Alhafizi</a></p>
+        </footer>
+    </div>
+
+    <script>
+        let selectedFiles = [];
+
+        function showStatus(msg, type) {
+            const el = document.getElementById('pdfStatus');
+            el.className = 'status-msg active ' + type;
+            el.innerHTML = '<span class="material-symbols-outlined">' + (type === 'success' ? 'check_circle' : 'error') + '</span>' + msg;
+        }
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(1) + ' MB';
+        }
+
+        function renderFileList() {
+            const list = document.getElementById('fileList');
+            const btn = document.getElementById('convertBtn');
+            if (selectedFiles.length === 0) {
+                list.innerHTML = '';
+                btn.disabled = true;
+                return;
+            }
+            btn.disabled = false;
+            list.innerHTML = selectedFiles.map((f, i) => `
+                <div class="file-item">
+                    <span class="material-symbols-outlined file-item-icon">image</span>
+                    <div class="file-item-info">
+                        <div class="file-item-name">${f.name}</div>
+                        <div class="file-item-size">${formatSize(f.size)}</div>
+                    </div>
+                    <button class="file-item-remove" onclick="removeFile(${i})">
+                        <span class="material-symbols-outlined" style="font-size:16px;">close</span>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function addFiles(files) {
+            for (const f of files) {
+                if (f.type.match(/image\/(jpeg|jpg|png)/)) {
+                    selectedFiles.push(f);
+                }
+            }
+            renderFileList();
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            renderFileList();
+        }
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            addFiles(e.target.files);
+            e.target.value = '';
+        });
+
+        const dropZone = document.getElementById('dropZone');
+        dropZone.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', function() { this.classList.remove('dragover'); });
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault(); this.classList.remove('dragover');
+            addFiles(e.dataTransfer.files);
+        });
+
+        function loadImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() { resolve({ img, dataUrl: e.target.result, width: img.width, height: img.height }); };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function convertToPdf() {
+            if (selectedFiles.length === 0) return;
+            const btn = document.getElementById('convertBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<div class="spinner active"></div> Converting...';
+
+            try {
+                const { jsPDF } = window.jspdf;
+                const pageSize = document.getElementById('pageSize').value;
+                const orient = document.getElementById('orientation').value;
+                let pdf;
+
+                for (let i = 0; i < selectedFiles.length; i++) {
+                    const data = await loadImage(selectedFiles[i]);
+                    const imgRatio = data.width / data.height;
+
+                    if (pageSize === 'fit') {
+                        const pxToMm = 0.264583;
+                        const w = data.width * pxToMm;
+                        const h = data.height * pxToMm;
+                        if (i === 0) {
+                            pdf = new jsPDF({ unit: 'mm', format: [w, h] });
+                        } else {
+                            pdf.addPage([w, h]);
+                        }
+                        pdf.addImage(data.dataUrl, 'JPEG', 0, 0, w, h, undefined, 'MEDIUM');
+                    } else {
+                        if (i === 0) {
+                            pdf = new jsPDF({ orientation: orient, unit: 'mm', format: pageSize });
+                        } else {
+                            pdf.addPage(pageSize, orient);
+                        }
+                        const pageW = pdf.internal.pageSize.getWidth();
+                        const pageH = pdf.internal.pageSize.getHeight();
+                        const margin = 10;
+                        const availW = pageW - margin * 2;
+                        const availH = pageH - margin * 2;
+                        let drawW, drawH;
+                        if (imgRatio > availW / availH) {
+                            drawW = availW;
+                            drawH = availW / imgRatio;
+                        } else {
+                            drawH = availH;
+                            drawW = availH * imgRatio;
+                        }
+                        const x = (pageW - drawW) / 2;
+                        const y = (pageH - drawH) / 2;
+                        pdf.addImage(data.dataUrl, 'JPEG', x, y, drawW, drawH, undefined, 'MEDIUM');
+                    }
+                }
+
+                pdf.save('basekun_images.pdf');
+                showStatus('PDF berhasil dibuat dan di-download!', 'success');
+            } catch (err) {
+                showStatus('Gagal mengkonversi: ' + err.message, 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-symbols-outlined">picture_as_pdf</span> Convert to PDF';
+            }
+        }
+    </script>
+</body>
+</html>

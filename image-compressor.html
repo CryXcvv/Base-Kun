@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Kompres ukuran gambar secara gratis tanpa kehilangan kualitas - Basekun Tools">
+    <title>Image Compressor — Basekun</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <div class="nav-logo"><img src="logo.png" alt="Logo"></div>
+            <span class="nav-brand-text">Basekun</span>
+        </div>
+        <a href="index.html" class="nav-back">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Kembali
+        </a>
+    </nav>
+
+    <div class="page-container">
+        <div class="shape shape-circle" style="width:260px;height:260px;top:-30px;left:-50px;"><div class="shape-inner" style="animation:floatB 9s ease-in-out infinite;"></div></div>
+        <div class="shape shape-ring" style="width:170px;height:170px;bottom:50px;right:-40px;"><div class="shape-inner" style="animation:floatA 11s ease-in-out infinite;"></div></div>
+        <div class="shape shape-dot" style="width:55px;height:55px;top:45%;right:5%;"><div class="shape-inner" style="animation:floatB 6s ease-in-out infinite 2s;"></div></div>
+
+        <div class="page-inner">
+            <div class="hero">
+                <div class="hero-badge">
+                    <span class="pulse-dot"></span>
+                    <span class="hero-badge-text">Browser-Based</span>
+                </div>
+                <h1 class="hero-title">Image Compressor</h1>
+                <p class="hero-subtitle">Kompres gambar dengan kontrol kualitas. Semua proses dilakukan lokal di browser kamu.</p>
+            </div>
+
+            <div class="card">
+                <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <span class="material-symbols-outlined">add_photo_alternate</span>
+                    <span class="drop-zone-text">Klik atau drag gambar ke sini</span>
+                    <span class="drop-zone-hint">JPG, JPEG, PNG, WebP</span>
+                </div>
+                <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/jpg" hidden>
+
+                <div class="result-area" id="compressResult">
+                    <div class="result-card">
+                        <div class="result-preview" style="margin-bottom:20px;">
+                            <img id="previewImg" src="" alt="Preview" style="max-height:300px;object-fit:contain;">
+                        </div>
+
+                        <div class="result-info" style="margin-bottom:4px;">
+                            <span class="result-label">File</span>
+                            <span class="result-value" id="fileName"></span>
+                        </div>
+
+                        <div class="quality-row">
+                            <span class="quality-label">Kualitas</span>
+                            <span class="quality-value" id="qualityVal">80%</span>
+                        </div>
+                        <div class="quality-slider">
+                            <input type="range" id="qualityRange" min="10" max="100" value="80" oninput="updateQuality(this.value)">
+                        </div>
+
+                        <div class="input-row" style="margin:16px 0;">
+                            <select class="text-input" id="outputFormat">
+                                <option value="jpeg">JPEG</option>
+                                <option value="png">PNG</option>
+                                <option value="webp">WebP</option>
+                            </select>
+                            <select class="text-input" id="resizeOption">
+                                <option value="original">Ukuran Asli</option>
+                                <option value="1920">Max 1920px</option>
+                                <option value="1280">Max 1280px</option>
+                                <option value="800">Max 800px</option>
+                                <option value="480">Max 480px</option>
+                            </select>
+                        </div>
+
+                        <button class="btn-primary" style="width:100%;" onclick="compressImage()">
+                            <span class="material-symbols-outlined">compress</span>
+                            Compress & Download
+                        </button>
+
+                        <div class="compression-stats" id="compStats" style="display:none;">
+                            <div class="stat-card">
+                                <span class="stat-value" id="statOriginal">-</span>
+                                <span class="stat-label">Original</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value" id="statCompressed">-</span>
+                                <span class="stat-label">Compressed</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value" id="statSaved">-</span>
+                                <span class="stat-label">Saved</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="status-msg" id="compStatus"></div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Made with care by <a href="https://abrur.netlify.app/" target="_blank" rel="noopener noreferrer">Abrar Alhafizi</a></p>
+        </footer>
+    </div>
+
+    <script>
+        let currentFile = null;
+        let originalSize = 0;
+
+        function showStatus(msg, type) {
+            const el = document.getElementById('compStatus');
+            el.className = 'status-msg active ' + type;
+            el.innerHTML = '<span class="material-symbols-outlined">' + (type === 'success' ? 'check_circle' : 'error') + '</span>' + msg;
+        }
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / 1048576).toFixed(2) + ' MB';
+        }
+
+        function updateQuality(val) {
+            document.getElementById('qualityVal').textContent = val + '%';
+        }
+
+        function loadFile(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                showStatus('File bukan gambar yang valid!', 'error');
+                return;
+            }
+            currentFile = file;
+            originalSize = file.size;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('fileName').textContent = file.name + ' (' + formatSize(file.size) + ')';
+                document.getElementById('compressResult').className = 'result-area active';
+                document.getElementById('compStats').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            if (e.target.files[0]) loadFile(e.target.files[0]);
+            e.target.value = '';
+        });
+
+        const dropZone = document.getElementById('dropZone');
+        dropZone.addEventListener('dragover', function(e) { e.preventDefault(); this.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', function() { this.classList.remove('dragover'); });
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault(); this.classList.remove('dragover');
+            if (e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+        });
+
+        function compressImage() {
+            if (!currentFile) { showStatus('Pilih gambar terlebih dahulu!', 'error'); return; }
+
+            const quality = parseInt(document.getElementById('qualityRange').value) / 100;
+            const format = document.getElementById('outputFormat').value;
+            const resizeOpt = document.getElementById('resizeOption').value;
+            const mimeType = 'image/' + format;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    let w = img.width;
+                    let h = img.height;
+
+                    if (resizeOpt !== 'original') {
+                        const maxDim = parseInt(resizeOpt);
+                        if (w > maxDim || h > maxDim) {
+                            if (w > h) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+                            else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+
+                    canvas.toBlob(function(blob) {
+                        const compressedSize = blob.size;
+                        const saved = ((1 - compressedSize / originalSize) * 100).toFixed(1);
+
+                        document.getElementById('statOriginal').textContent = formatSize(originalSize);
+                        document.getElementById('statCompressed').textContent = formatSize(compressedSize);
+                        document.getElementById('statSaved').textContent = (saved > 0 ? saved : '0') + '%';
+                        document.getElementById('compStats').style.display = '';
+
+                        const ext = format === 'jpeg' ? 'jpg' : format;
+                        const baseName = currentFile.name.replace(/\.[^.]+$/, '');
+                        const link = document.createElement('a');
+                        link.download = baseName + '_compressed.' + ext;
+                        link.href = URL.createObjectURL(blob);
+                        link.click();
+                        URL.revokeObjectURL(link.href);
+
+                        showStatus('Gambar berhasil dikompres dan di-download!', 'success');
+                    }, mimeType, quality);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(currentFile);
+        }
+    </script>
+</body>
+</html>

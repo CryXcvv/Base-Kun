@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Generate QR Code dari teks atau URL secara gratis - Basekun Tools">
+    <title>QR Generator — Basekun</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,1,0" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <div class="nav-logo"><img src="logo.png" alt="Logo"></div>
+            <span class="nav-brand-text">Basekun</span>
+        </div>
+        <a href="index.html" class="nav-back">
+            <span class="material-symbols-outlined">arrow_back</span>
+            Kembali
+        </a>
+    </nav>
+
+    <div class="page-container">
+        <div class="shape shape-circle" style="width:220px;height:220px;top:-20px;right:-50px;"><div class="shape-inner" style="animation:floatB 9s ease-in-out infinite;"></div></div>
+        <div class="shape shape-ring" style="width:140px;height:140px;bottom:80px;left:-30px;"><div class="shape-inner" style="animation:floatA 10s ease-in-out infinite;"></div></div>
+        <div class="shape shape-dot" style="width:70px;height:70px;top:50%;left:8%;"><div class="shape-inner" style="animation:floatB 7s ease-in-out infinite 1s;"></div></div>
+
+        <div class="page-inner">
+            <div class="hero">
+                <div class="hero-badge">
+                    <span class="pulse-dot"></span>
+                    <span class="hero-badge-text">Instant Generate</span>
+                </div>
+                <h1 class="hero-title">QR Generator</h1>
+                <p class="hero-subtitle">Buat QR Code dari teks, URL, atau data apapun. Gratis dan tanpa batas.</p>
+            </div>
+
+            <div class="card">
+                <div class="input-group">
+                    <textarea class="text-input" id="qrText" placeholder="Masukkan teks atau URL..." rows="3"></textarea>
+                    <div class="input-row">
+                        <select class="text-input" id="qrSize">
+                            <option value="128">128 x 128</option>
+                            <option value="256" selected>256 x 256</option>
+                            <option value="512">512 x 512</option>
+                            <option value="1024">1024 x 1024</option>
+                        </select>
+                    </div>
+                    <div class="input-row">
+                        <div class="color-input-wrap" style="flex:1;">
+                            <input type="color" id="qrFgColor" value="#000000">
+                            <span style="font-size:0.8rem;font-weight:600;color:var(--color-on-surface-variant);">Foreground</span>
+                        </div>
+                        <div class="color-input-wrap" style="flex:1;">
+                            <input type="color" id="qrBgColor" value="#ffffff">
+                            <span style="font-size:0.8rem;font-weight:600;color:var(--color-on-surface-variant);">Background</span>
+                        </div>
+                    </div>
+                    <button class="btn-primary" id="generateBtn" onclick="generateQR()">
+                        <span class="material-symbols-outlined">qr_code_2</span>
+                        Generate QR Code
+                    </button>
+                </div>
+
+                <div class="status-msg" id="qrStatus"></div>
+
+                <div class="result-area" id="qrResult">
+                    <div class="result-card">
+                        <div class="qr-preview" id="qrPreview"></div>
+                        <div class="result-actions" style="justify-content:center;">
+                            <button class="btn-primary" onclick="downloadQR()">
+                                <span class="material-symbols-outlined">download</span>
+                                Download PNG
+                            </button>
+                            <button class="btn-secondary" onclick="downloadQRSvg()">
+                                <span class="material-symbols-outlined">download</span>
+                                Download SVG
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <p>Made with care by <a href="https://abrur.netlify.app/" target="_blank" rel="noopener noreferrer">Abrar Alhafizi</a></p>
+        </footer>
+    </div>
+
+    <script>
+        let qrInstance = null;
+
+        function showStatus(msg, type) {
+            const el = document.getElementById('qrStatus');
+            el.className = 'status-msg active ' + type;
+            el.innerHTML = '<span class="material-symbols-outlined">' + (type === 'success' ? 'check_circle' : 'error') + '</span>' + msg;
+        }
+
+        function generateQR() {
+            const text = document.getElementById('qrText').value.trim();
+            if (!text) { showStatus('Masukkan teks atau URL terlebih dahulu!', 'error'); return; }
+
+            const size = parseInt(document.getElementById('qrSize').value);
+            const fgColor = document.getElementById('qrFgColor').value;
+            const bgColor = document.getElementById('qrBgColor').value;
+            const preview = document.getElementById('qrPreview');
+
+            preview.innerHTML = '';
+
+            try {
+                qrInstance = new QRCode(preview, {
+                    text: text,
+                    width: size,
+                    height: size,
+                    colorDark: fgColor,
+                    colorLight: bgColor,
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+                document.getElementById('qrResult').className = 'result-area active';
+                showStatus('QR Code berhasil dibuat!', 'success');
+            } catch (err) {
+                showStatus('Gagal membuat QR Code: ' + err.message, 'error');
+            }
+        }
+
+        function downloadQR() {
+            const canvas = document.querySelector('#qrPreview canvas');
+            if (!canvas) { showStatus('Generate QR Code terlebih dahulu!', 'error'); return; }
+            const link = document.createElement('a');
+            link.download = 'basekun_qrcode.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadQRSvg() {
+            const canvas = document.querySelector('#qrPreview canvas');
+            if (!canvas) { showStatus('Generate QR Code terlebih dahulu!', 'error'); return; }
+            const w = canvas.width;
+            const h = canvas.height;
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.getImageData(0, 0, w, h);
+            const bgColor = document.getElementById('qrBgColor').value;
+            const fgColor = document.getElementById('qrFgColor').value;
+
+            let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">`;
+            svg += `<rect width="${w}" height="${h}" fill="${bgColor}"/>`;
+
+            for (let y = 0; y < h; y++) {
+                for (let x = 0; x < w; x++) {
+                    const idx = (y * w + x) * 4;
+                    const r = imageData.data[idx];
+                    if (r < 128) {
+                        svg += `<rect x="${x}" y="${y}" width="1" height="1" fill="${fgColor}"/>`;
+                    }
+                }
+            }
+            svg += '</svg>';
+
+            const blob = new Blob([svg], { type: 'image/svg+xml' });
+            const link = document.createElement('a');
+            link.download = 'basekun_qrcode.svg';
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
+
+        document.getElementById('qrText').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); generateQR(); }
+        });
+    </script>
+</body>
+</html>
